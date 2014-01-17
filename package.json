@@ -1,0 +1,21 @@
+{
+  "name": "gradebook",
+  "version": "0.0.1",
+  "description": "Used to log a user into to the bsd405 gradebook and retrive their grade information",
+  "keywords": ["gradebook", "grades"],
+  "author": "Henry Troutman <henguin1001@gmail.com>",
+  "main": "gradebook.js",
+  "dependencies": {
+    "request": "~2.31.0",
+    "cheerio": "0.13.1"
+  },
+  "engines": {
+    "node": ">= 0.4.x < 0.7.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "devDependencies": {
+    "mocha": "1.17.x"
+  }
+}

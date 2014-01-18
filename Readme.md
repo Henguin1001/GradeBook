@@ -41,7 +41,7 @@ gradebook.startSession(function(err){
 	}
 });
 ```
-## end the session
+## End the session
 Of course it holds the user's grades
 ``` js
 var Gradebook = require('../gradebook');

@@ -1,5 +1,6 @@
 A node module allowing for access to the Bellevue School District gradebook
-
+#Install it
+Using npm just `npm install gradebook`
 # How to use it
 ## Start a session
 ``` js

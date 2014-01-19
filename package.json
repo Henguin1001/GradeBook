@@ -7,10 +7,10 @@
   "main": "gradebook.js",
   "dependencies": {
     "request": "~2.31.0",
-    "cheerio": "0.13.1"
+    "cheerio": ">= 0.13.1"
   },
   "engines": {
-    "node": ">= 0.4.x < 0.7.0"
+    "node": ">= 0.4.0"
   },
   "scripts": {
     "test": "mocha"

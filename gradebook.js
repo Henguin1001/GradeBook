@@ -12,6 +12,8 @@
 function GradeBook(username, password) {
 	// using the request module for http requests
 	this.request = require('request');
+	// using the async module for reasons
+	this.async = require('async');
 	// telling it to keep the cookies
 	// without it a login would be prompted at each request
 	this.jar = this.request.jar();
@@ -213,6 +215,90 @@ GradeBook.prototype.getGrades = function(callback) {
 		}
 	});
 }
+
+/**
+ * gets the assignments for each class
+ * @param  {json}   grades_data the previously captured grade data
+ * @see  Gradebook.getGrades
+ * @param  {Function} callback    called when the actions is completed passing the modified grades data
+ */
+GradeBook.prototype.getAssignments = function(grades_data, callback) {
+	// preserve member variables, request etc
+	var request = this.request,
+		jar = this.jar,
+		cheerio = this.cheerio;
+	// using the async library to iterate through courses and make the appropriate requests
+	this.async.map(grades_data,
+		function(value, callback) {
+			// define a function parse the html output and then format it
+			var parseTable = function(data) {
+				// again using cheerio
+				var $ = cheerio.load(data),
+					// the table still as a dom element
+					assignments_cheerio = $('table.reportTable')[0];
+
+				var assignments = $(assignments_cheerio).children('tbody').children().map(function(index, value) {
+					// get the elements holding the data, lots of fields
+					var number = $(value).children()[0],
+						name = $(value).children()[1],
+						date = $(value).children()[2],
+						category = $(value).children()[3],
+						grade = $(value).children()[4],
+						max = $(value).children()[5],
+						letter = $(value).children()[6],
+						comments = $(value).children()[7];
+					// extract and store the data (text)
+					var number_text = $(number).text(),
+						name_text = $(name).text(),
+						date_text = $(date).text(),
+						category_text = $(category).text()
+						grade_text = $(grade).text(),
+						max_text = $(max).text(),
+						letter_text = $(letter).text(),
+						comments_text = $(comments).text();
+					// return it all with the respective field names
+					return {
+						"number": number_text,
+						"name": name_text,
+						"date": date_text,
+						"category": category_text,
+						"grade": grade_text,
+						"max": max_text,
+						"letter": letter_text,
+						"comments": comments_text
+					};
+				});
+				// once again remove the fields from cheerio
+				return cheerio.seperate(assignments);
+			};
+			// get whichever semester is defined
+			if (value.firstSemester.url) {
+				// make the request with that url
+				request.get('https://grades.bsd405.org/Pinnacle/Gradebook/InternetViewer/' + value.firstSemester.url, {
+					jar: jar
+				}, function(err, response) {
+					callback(err, parseTable(response.body));
+				});
+			} else if (value.secondSemester.url) {
+				request.get('https://grades.bsd405.org/Pinnacle/Gradebook/InternetViewer/' + value.secondSemester.url, {
+					jar: jar
+				}, function(err, response) {
+					callback(err, parseTable(response.body));
+				});
+			} else callback(null, undefined);
+
+		},
+		// when its done with all that
+		function(err, results) {
+			// append to the original array and pass it to the callback
+			callback(null, grades_data.map(function(value, index) {
+				value.assignments = results[index];
+				return value;
+			}));
+		});
+}
+
+
 /**
  * refreshes the cookie jar
  */

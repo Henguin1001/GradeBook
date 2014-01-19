@@ -4,7 +4,7 @@ Using npm just `npm install gradebook`
 # How to use it
 ## Start a session
 ``` js
-var Gradebook = require('../gradebook');
+var Gradebook = require('gradebook');
 var gradebook = new Gradebook('username', 'password');
 gradebook.startSession(function(err){
 	if(!err){
@@ -15,7 +15,7 @@ gradebook.startSession(function(err){
 ## Access the default page
 it holds the the overdue, due, and soon to be due assignments
 ``` js
-var Gradebook = require('../gradebook');
+var Gradebook = require('gradebook');
 var gradebook = new Gradebook('username', 'password');
 gradebook.startSession(function(err){
 	if(!err){
@@ -30,7 +30,7 @@ gradebook.startSession(function(err){
 ## Access the grades page
 Of course it holds the user's grades
 ``` js
-var Gradebook = require('../gradebook');
+var Gradebook = require('gradebook');
 var gradebook = new Gradebook('username', 'password');
 gradebook.startSession(function(err){
 	if(!err){
@@ -44,7 +44,7 @@ gradebook.startSession(function(err){
 ```
 ## Get the assignments for each course
 ``` js
-var Gradebook = require('../gradebook');
+var Gradebook = require('gradebook');
 var gradebook = new Gradebook('username', 'password');
 gradebook.startSession(function(err){
 	if(!err){
@@ -63,7 +63,7 @@ gradebook.startSession(function(err){
 ## End the session
 Of course it holds the user's grades
 ``` js
-var Gradebook = require('../gradebook');
+var Gradebook = require('gradebook');
 var gradebook = new Gradebook('username', 'password');
 gradebook.startSession(function(err){
 	gradebook.endSession();

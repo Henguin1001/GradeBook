@@ -41,6 +41,24 @@ gradebook.startSession(function(err){
 	}
 });
 ```
+## Get the assignments for each course
+``` js
+var Gradebook = require('../gradebook');
+var gradebook = new Gradebook('username', 'password');
+gradebook.startSession(function(err){
+	if(!err){
+		gradebook.getGrades(function(err,grades){
+			if(!err){
+				gradebook.getAssignments(grades,function(err,body){
+					if(!err){
+						console.log(body);
+					}
+				});
+			}
+		});
+	}
+});
+```
 ## End the session
 Of course it holds the user's grades
 ``` js

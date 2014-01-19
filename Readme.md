@@ -13,7 +13,7 @@ gradebook.startSession(function(err){
 });
 ```
 ## Access the default page
-it holds the the overdue, due, and soon to be due assignments
+It holds the the overdue, due, and soon to be due assignments
 ``` js
 var Gradebook = require('gradebook');
 var gradebook = new Gradebook('username', 'password');

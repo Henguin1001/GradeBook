@@ -1,21 +1,22 @@
 {
-  "name": "gradebook",
-  "version": "0.0.2",
-  "description": "Used to log a user into to the bsd405 gradebook and retrive their grade information",
-  "keywords": ["gradebook", "grades"],
-  "author": "Henry Troutman <henguin1001@gmail.com>",
-  "main": "gradebook.js",
-  "dependencies": {
-    "request": "~2.31.0",
-    "cheerio": ">= 0.13.1"
-  },
-  "engines": {
-    "node": ">= 0.4.0"
-  },
-  "scripts": {
-    "test": "mocha"
-  },
-  "devDependencies": {
-    "mocha": "1.17.x"
-  }
+	"name": "gradebook",
+	"version": "0.0.2",
+	"description": "Used to log a user into to the bsd405 gradebook and retrive their grade information",
+	"keywords": ["gradebook", "grades"],
+	"author": "Henry Troutman <henguin1001@gmail.com>",
+	"main": "gradebook.js",
+	"dependencies": {
+		"request": "~2.31.0",
+		"cheerio": ">= 0.13.1",
+		"async": ">=0.2.9"
+	},
+	"engines": {
+		"node": ">= 0.4.0"
+	},
+	"scripts": {
+		"test": "mocha"
+	},
+	"devDependencies": {
+		"mocha": "1.17.x"
+	}
 }

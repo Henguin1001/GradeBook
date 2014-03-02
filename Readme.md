@@ -27,6 +27,18 @@ gradebook.startSession(function(err){
 	}
 });
 ```
+would result in something like
+``` json
+{
+	due:[],
+	future:[],
+	overdue:[
+		assignment:"Foo Assignment",
+		course:"bar class",
+		date:"Feb 29"
+	]
+}
+```
 ## Access the grades page
 Of course it holds the user's grades
 ``` js
@@ -41,6 +53,20 @@ gradebook.startSession(function(err){
 		});
 	}
 });
+```
+would result in something like
+``` json
+[
+	{ 
+		course:"Ap bar b",
+		period:"3",
+		firstSemester:{
+			grade:"A+",
+			url:"lalal",
+		},
+		secondSemester:undefined
+	}
+]
 ```
 ## Get the assignments for each course
 ``` js
@@ -59,6 +85,29 @@ gradebook.startSession(function(err){
 		});
 	}
 });
+```
+would result in something like
+``` json
+[
+	{ 
+		course:"Ap bar b",
+		period:"3",
+		firstSemester:{
+			grade:"A+",
+			url:"lalal",
+			assignments:[
+				{
+					name:"homework A",
+					grade:"40",
+					max:"44",
+					letter:"A",
+					category:"homework",
+					comments:"Terrible Effort"
+			]
+		},
+		secondSemester:undefined
+	}
+]
 ```
 ## End the session
 ``` js

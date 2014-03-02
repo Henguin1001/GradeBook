@@ -48,23 +48,23 @@ GradeBook.prototype.startSession = function(callback) {
 	var cheerio = this.cheerio,
 		request = this.request,
 		fields = {}, username = this.username,
-		password = this.password;
+		password = this.password,
+		jar = this.jar;
 	request.get('https://grades.bsd405.org/Pinnacle/Gradebook/Logon.aspx?ReturnUrl=%2fpinnacle%2fgradebook%2fDefault.aspx', {
-		jar: this.jar
+		jar: jar
 	}, function(err, response) {
 		var $ = cheerio.load(response.body);
 		// these are the hidden fields of the login page
-		$('input').each(function() {
+		$('input[name]').each(function() {
 			fields[$(this).attr('name')] = $(this).val();
 		});
-
 		// add the proper username and password to these fields
 		fields['ctl00$ContentPlaceHolder$Username'] = username;
 		fields['ctl00$ContentPlaceHolder$Password'] = password;
 
 		// make a request to the login page with the form data stored as fields
 		request.post('https://grades.bsd405.org/Pinnacle/Gradebook/Logon.aspx?ReturnUrl=%2fpinnacle%2fgradebook%2fDefault.aspx', {
-			jar: this.jar
+			jar: jar
 		}, function(err, response) {
 			if (!err) {
 				// check if there was a problem with logging in

@@ -282,30 +282,64 @@ GradeBook.prototype.getAssignments = function(grades_data, callback) {
 				// once again remove the fields from cheerio
 				return cheerio.seperate(assignments);
 			};
+
+
 			// get whichever semester is defined
 			if (value.firstSemester.url) {
+
 				// make the request with that url
 				request.get('https://grades.bsd405.org/Pinnacle/Gradebook/InternetViewer/' + value.firstSemester.url, {
 					jar: jar
-				}, function(err, response) {
-					callback(err, parseTable(response.body));
+				}, function(err, first_response) {
+					if (value.secondSemester.url) {
+						request.get('https://grades.bsd405.org/Pinnacle/Gradebook/InternetViewer/' + value.secondSemester.url, {
+							jar: jar
+						}, function(err, second_response) {
+							callback(err, {
+								firstSemester: parseTable(first_response.body),
+								secondSemester: parseTable(second_response.body)
+							});
+						});
+					} else {
+						callback(err, {
+							firstSemester: parseTable(first_response.body),
+							secondSemester: undefined
+						});
+					}
+
 				});
 			} else if (value.secondSemester.url) {
 				request.get('https://grades.bsd405.org/Pinnacle/Gradebook/InternetViewer/' + value.secondSemester.url, {
 					jar: jar
-				}, function(err, response) {
-					callback(err, parseTable(response.body));
+				}, function(err, second_response) {
+					if (value.firstSemester.url) {
+						request.get('https://grades.bsd405.org/Pinnacle/Gradebook/InternetViewer/' + value.firstSemester.url, {
+							jar: jar
+						}, function(err, first_response) {
+							callback(err, {
+								firstSemester: parseTable(first_response.body),
+								secondSemester: parseTable(second_response.body)
+							});
+						});
+					} else {
+						callback(err, {
+							firstSemester: undefined,
+							secondSemester: parseTable(second_response.body)
+						});
+					}
 				});
-			} else callback(null, undefined);
+			} else callback(null, {
+				firstSemester: undefined,
+				secondSemester: undefined
+			});
+
+
 
 		},
 		// when its done with all that
 		function(err, results) {
 			// append to the original array and pass it to the callback
-			callback(null, grades_data.map(function(value, index) {
-				value.assignments = results[index];
-				return value;
-			}));
+			callback(null, results);
 		});
 }
 

@@ -17,23 +17,13 @@ function GradeBook(username, password) {
 	// telling it to keep the cookies
 	// without it a login would be prompted at each request
 	this.jar = this.request.jar();
-	// these are the hidden fields of the login page
-	this.fields = {
-		'__LASTFOCUS': '',
-		'__EVENTTARGET': '',
-		'__EVENTARGUMENT': '',
-		'__VIEWSTATE': '/wEPDwUJNTkxNzI3MDIzD2QWAmYPZBYCAgMPZBYGAgEPZBYCAgkPZBYCAgEPZBYIAgMPFgIeB1Zpc2libGVoZAIFDxYCHwBoZAIHDxYCHwBoZAIJDxYCHgVzdHlsZQUjdmVydGljYWwtYWxpZ246bWlkZGxlO2Rpc3BsYXk6bm9uZTtkAgMPDxYCHwBoZGQCBQ9kFghmD2QWAgINDxYCHgVjbGFzcwUQc2luZ2xlU2Nob29sTGlzdBYCAgEPZBYCAgEPEGQPFgFmFgEQBQ5EZWZhdWx0IERvbWFpbgUIUGlubmFjbGVnZGQCAg9kFgICEw9kFgICAQ9kFgICAQ8QZGQWAGQCBw8PFgIeBFRleHQFIFBpbm5hY2xlIEdyYWRlIDIwMTIgV2ludGVyIEJyZWFrZGQCCA8PFgIfAwU3Q29weXJpZ2h0IChjKSAyMDEzIEdsb2JhbFNjaG9sYXIuICBBbGwgcmlnaHRzIHJlc2VydmVkLmRkZOyavVRjF60WtD168prqyKT3U8Z0',
-		'__EVENTVALIDATION': '/wEWBgKbqrX2CwLnksmgAQKTpbWbDgLB5+KIBAL4xb20BAK20ZqiCVo5iBSaTt9D6CP/np3mnWAl1Hw4',
-		'ctl00$ContentPlaceHolder$lstDomains': 'Pinnacle',
-		'ctl00$ContentPlaceHolder$LogonButton': 'Sign in',
-		'PageUniqueId': 'c0b81baa-d2fc-4737-a4ef-4db5e94eb891'
-	};
-	// add the proper username and password to these fields
-	this.fields['ctl00$ContentPlaceHolder$Username'] = username;
-	this.fields['ctl00$ContentPlaceHolder$Password'] = password;
-
 	// grab our dom parser?
 	this.cheerio = require('cheerio');
+
+	// no need for explanation
+	this.username = username;
+	this.password = password;
+
 	/**
 	 * removes all ties of an array to cheerio
 	 * @param  {object} cheerio_object - an object resulting from using $()
@@ -54,22 +44,43 @@ function GradeBook(username, password) {
  *
  */
 GradeBook.prototype.startSession = function(callback) {
-	// make a request to the login page with the form data stored as this.fields
-	this.request.post('https://grades.bsd405.org/Pinnacle/Gradebook/Logon.aspx?ReturnUrl=%2fpinnacle%2fgradebook%2fDefault.aspx', {
+
+	var cheerio = this.cheerio,
+		request = this.request,
+		fields = {}, username = this.username,
+		password = this.password;
+	request.get('https://grades.bsd405.org/Pinnacle/Gradebook/Logon.aspx?ReturnUrl=%2fpinnacle%2fgradebook%2fDefault.aspx', {
 		jar: this.jar
 	}, function(err, response) {
-		if (!err) {
-			// check if there was a problem with logging in
-			// if it was correct then it will say object moved
-			if (response.body.indexOf("Object moved") != -1) {
-				callback(undefined);
+		var $ = cheerio.load(response.body);
+		// these are the hidden fields of the login page
+		$('input').each(function() {
+			fields[$(this).attr('name')] = $(this).val();
+		});
+
+		// add the proper username and password to these fields
+		fields['ctl00$ContentPlaceHolder$Username'] = username;
+		fields['ctl00$ContentPlaceHolder$Password'] = password;
+
+		// make a request to the login page with the form data stored as fields
+		request.post('https://grades.bsd405.org/Pinnacle/Gradebook/Logon.aspx?ReturnUrl=%2fpinnacle%2fgradebook%2fDefault.aspx', {
+			jar: this.jar
+		}, function(err, response) {
+			if (!err) {
+				// check if there was a problem with logging in
+				// if it was correct then it will say object moved
+				if (response.body.indexOf("Object moved") != -1) {
+					callback(undefined);
+				} else {
+					callback(new Error("Username or password was incorrect."));
+				}
 			} else {
-				callback(new Error("Username or password was incorrect."));
+				callback(err);
 			}
-		} else {
-			callback(err);
-		}
-	}).form(this.fields);
+		}).form(fields);
+
+	});
+
 }
 
 /**

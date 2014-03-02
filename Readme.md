@@ -30,12 +30,12 @@ gradebook.startSession(function(err){
 would result in something like
 ``` json
 {
-	due:[],
-	future:[],
-	overdue:[
-		assignment:"Foo Assignment",
-		course:"bar class",
-		date:"Feb 29"
+	"due":[],
+	"future":[],
+	"overdue":[
+		"assignment":"Foo Assignment",
+		"course":"bar class",
+		"date":"Feb 29"
 	]
 }
 ```
@@ -58,13 +58,13 @@ would result in something like
 ``` json
 [
 	{ 
-		course:"Ap bar b",
-		period:"3",
-		firstSemester:{
-			grade:"A+",
-			url:"lalal",
+		"course":"Ap bar b",
+		"period":"3",
+		"firstSemester":{
+			"grade":"A+",
+			"url":"lalal",
 		},
-		secondSemester:undefined
+		"secondSemester":undefined
 	}
 ]
 ```
@@ -90,22 +90,22 @@ would result in something like
 ``` json
 [
 	{ 
-		course:"Ap bar b",
-		period:"3",
-		firstSemester:{
-			grade:"A+",
-			url:"lalal",
-			assignments:[
+		"course":"Ap bar b",
+		"period":"3",
+		"firstSemester":{
+			"grade":"A+",
+			"url":"lalal",
+			"assignments":[
 				{
-					name:"homework A",
-					grade:"40",
-					max:"44",
-					letter:"A",
-					category:"homework",
-					comments:"Terrible Effort"
+					"name":"homework A",
+					"grade":"40",
+					"max":"44",
+					"letter":"A",
+					"category":"homework",
+					"comments":"Terrible Effort"
 			]
 		},
-		secondSemester:undefined
+		"secondSemester":undefined
 	}
 ]
 ```

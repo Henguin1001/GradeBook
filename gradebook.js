@@ -246,7 +246,9 @@ GradeBook.prototype.getAssignments = function(grades_data, callback) {
 				// again using cheerio
 				var $ = cheerio.load(data),
 					// the table still as a dom element
-					assignments_cheerio = $('table.reportTable')[0];
+					assignments_cheerio = $('table.reportTable')[0],
+					categories_cheerio = $('table.reportTable')[1];
+
 
 				var assignments = $(assignments_cheerio).children('tbody').children().map(function(index, value) {
 					// get the elements holding the data, lots of fields
@@ -279,8 +281,32 @@ GradeBook.prototype.getAssignments = function(grades_data, callback) {
 						"comments": comments_text
 					};
 				});
+
+				var categories = $(categories_cheerio).children('tbody').children().map(function(index, value) {
+					var name = $(value).children()[0],
+						weight = $(value).children()[1],
+						points = $(value).children()[2],
+						percent = $(value).children()[3],
+						letter = $(value).children()[4];
+
+					// extract and store the data (text)
+					var name_text = $(name).text(),
+						weight_text = $(weight).text(),
+						points_text = $(points).text(),
+						percent_text = $(percent).text()
+						letter_text = $(letter).text();
+					// return it all with the respective field names
+					return {
+						"name": name_text,
+						"weight": weight_text,
+						"points": points_text,
+						"percent": percent_text,
+						"letter": grade_text
+					};
+				});
+
 				// once again remove the fields from cheerio
-				return cheerio.seperate(assignments);
+				return { assignments:cheerio.seperate(assignments), categories:cheerio.seperate(categories)};
 			};
 
 

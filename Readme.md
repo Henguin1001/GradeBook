@@ -90,11 +90,7 @@ would result in something like
 ``` json
 [
 	{ 
-		"course":"Ap bar b",
-		"period":"3",
 		"firstSemester":{
-			"grade":"A+",
-			"url":"lalal",
 			"assignments":[
 				{
 					"name":"homework A",
@@ -103,6 +99,16 @@ would result in something like
 					"letter":"A",
 					"category":"homework",
 					"comments":"Terrible Effort"
+				}
+			],
+			"categories": [
+				{
+					"name": "homework",
+					"weight": "50",
+					"points": "110/220",
+					"percent": "50",
+					"letter": "A-"
+				}
 			]
 		},
 		"secondSemester":undefined

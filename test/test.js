@@ -23,15 +23,16 @@ describe('Gradebook', function() {
 				gradebook.getGrades(done);
 			});
 		});
-		describe('#getAssignments',function(){
-			it('should run with no error', function(done){
+		describe('#getAssignments', function() {
+			it('should run with no error', function(done) {
 				this.timeout(0);
-				gradebook.getGrades(function(err,grade_data){
-					if(err) {
+				gradebook.getGrades(function(err, grade_data) {
+					if (err) {
 						throw err;
 						done();
 					} else {
-						gradebook.getAssignments(grade_data,done);
+						gradebook.getAssignments(grade_data, done);
+
 					}
 
 				})
@@ -43,7 +44,7 @@ describe('Gradebook', function() {
 				done();
 			});
 		});
-		
+
 
 	});
 });

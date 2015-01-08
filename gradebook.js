@@ -47,12 +47,18 @@ GradeBook.prototype.startSession = function(callback) {
 
 	var cheerio = this.cheerio,
 		request = this.request,
-		fields = {}, username = this.username,
+		fields = {},
+		username = this.username,
 		password = this.password,
 		jar = this.jar;
 	request.get('https://grades.bsd405.org/Pinnacle/Gradebook/Logon.aspx?ReturnUrl=%2fpinnacle%2fgradebook%2fDefault.aspx', {
-		jar: jar
+		jar: jar,
+		rejectUnauthorized: false,
+		headers: {
+			'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'
+		}
 	}, function(err, response) {
+
 		var $ = cheerio.load(response.body);
 		// these are the hidden fields of the login page
 		$('input[name]').each(function() {
@@ -64,7 +70,11 @@ GradeBook.prototype.startSession = function(callback) {
 
 		// make a request to the login page with the form data stored as fields
 		request.post('https://grades.bsd405.org/Pinnacle/Gradebook/Logon.aspx?ReturnUrl=%2fpinnacle%2fgradebook%2fDefault.aspx', {
-			jar: jar
+			jar: jar,
+			rejectUnauthorized: false,
+			headers: {
+				'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'
+			}
 		}, function(err, response) {
 			if (!err) {
 				// check if there was a problem with logging in
@@ -90,9 +100,16 @@ GradeBook.prototype.startSession = function(callback) {
  */
 GradeBook.prototype.getDefault = function(callback) {
 	// preserve cheerio
-	var cheerio = this.cheerio;
-	this.request.get('https://grades.bsd405.org/Pinnacle/Gradebook/InternetViewer/Default.aspx', {
-		jar: this.jar
+	var cheerio = this.cheerio,
+		request = this.request,
+		jar = this.jar;
+
+	request.get('https://grades.bsd405.org/Pinnacle/Gradebook/InternetViewer/Default.aspx', {
+		jar: jar,
+		rejectUnauthorized: false,
+		headers: {
+			'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'
+		}
 	}, function(err, response) {
 		// was there an error in the request
 		if (!err) {
@@ -167,10 +184,14 @@ GradeBook.prototype.getDefault = function(callback) {
  */
 GradeBook.prototype.getGrades = function(callback) {
 	// preserve cheerio
-	var cheerio = this.cheerio;
+	var cheerio = this.cheerio, jar = this.jar;
 	// make the request to the GradeSummary page
 	this.request.get('https://grades.bsd405.org/Pinnacle/Gradebook/InternetViewer/GradeSummary.aspx', {
-		jar: this.jar
+		jar: jar,
+		rejectUnauthorized: false,
+		headers: {
+			'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'
+		}
 	}, function(err, response) {
 		// was their an error in the request
 		if (!err) {
@@ -265,7 +286,7 @@ GradeBook.prototype.getAssignments = function(grades_data, callback) {
 						name_text = $(name).text(),
 						date_text = $(date).text(),
 						category_text = $(category).text()
-						grade_text = $(grade).text(),
+					grade_text = $(grade).text(),
 						max_text = $(max).text(),
 						letter_text = $(letter).text(),
 						comments_text = $(comments).text();
@@ -294,7 +315,7 @@ GradeBook.prototype.getAssignments = function(grades_data, callback) {
 						weight_text = $(weight).text(),
 						points_text = $(points).text(),
 						percent_text = $(percent).text()
-						letter_text = $(letter).text();
+					letter_text = $(letter).text();
 					// return it all with the respective field names
 					return {
 						"name": name_text,
@@ -306,7 +327,10 @@ GradeBook.prototype.getAssignments = function(grades_data, callback) {
 				});
 
 				// once again remove the fields from cheerio
-				return { assignments:cheerio.seperate(assignments), categories:cheerio.seperate(categories)};
+				return {
+					assignments: cheerio.seperate(assignments),
+					categories: cheerio.seperate(categories)
+				};
 			};
 
 
@@ -315,11 +339,19 @@ GradeBook.prototype.getAssignments = function(grades_data, callback) {
 
 				// make the request with that url
 				request.get('https://grades.bsd405.org/Pinnacle/Gradebook/InternetViewer/' + value.firstSemester.url, {
-					jar: jar
+					jar: jar,
+					rejectUnauthorized: false,
+					headers: {
+						'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'
+					}
 				}, function(err, first_response) {
 					if (value.secondSemester.url) {
 						request.get('https://grades.bsd405.org/Pinnacle/Gradebook/InternetViewer/' + value.secondSemester.url, {
-							jar: jar
+							jar: jar,
+							rejectUnauthorized: false,
+							headers: {
+								'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'
+							}
 						}, function(err, second_response) {
 							callback(err, {
 								firstSemester: parseTable(first_response.body),
@@ -336,11 +368,19 @@ GradeBook.prototype.getAssignments = function(grades_data, callback) {
 				});
 			} else if (value.secondSemester.url) {
 				request.get('https://grades.bsd405.org/Pinnacle/Gradebook/InternetViewer/' + value.secondSemester.url, {
-					jar: jar
+					jar: jar,
+					rejectUnauthorized: false,
+					headers: {
+						'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'
+					}
 				}, function(err, second_response) {
 					if (value.firstSemester.url) {
 						request.get('https://grades.bsd405.org/Pinnacle/Gradebook/InternetViewer/' + value.firstSemester.url, {
-							jar: jar
+							jar: jar,
+							rejectUnauthorized: false,
+							headers: {
+								'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'
+							}
 						}, function(err, first_response) {
 							callback(err, {
 								firstSemester: parseTable(first_response.body),

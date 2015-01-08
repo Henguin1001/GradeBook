@@ -38,6 +38,10 @@ function GradeBook(username, password) {
 	};
 }
 
+GradeBook.prototype.getJar = function() {
+	return this.jar;
+};
+
 /**
  * Starts the communication with the gradebook
  * @param  {Function} callback - called after the request is made
